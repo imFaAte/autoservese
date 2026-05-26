@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            {% if service.image %}
+            <img src="{{ service.image.url }}" class="img-fluid rounded" alt="{{ service.name }}">
+            {% else %}
+            <div class="bg-light p-5 text-center rounded"><i class="fas fa-car fa-5x"></i></div>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1>{{ service.name }}</h1>
+            <p class="lead">{{ service.description }}</p>
+            <h3 class="text-primary">{{ service.price }} ₽</h3>
+            <p><strong>⏱ Длительность:</strong> {{ service.duration }} минут</p>
+            <a href="{% url 'add_to_cart' service.id %}" class="btn btn-success btn-lg">Добавить в корзину</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

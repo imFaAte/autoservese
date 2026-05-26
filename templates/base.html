@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Автосервис "Мастер"{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 60px 0; }
+        .card-img-top { height: 200px; object-fit: cover; }
+
+        .footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+        .footer h5 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .footer a {
+            color: #bdc3c7;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #f39c12;
+        }
+        .footer .social-links a {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 1.3rem;
+        }
+        .footer .copyright {
+            border-top: 1px solid #3d566e;
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .footer .contact-info li {
+            margin-bottom: 10px;
+        }
+        .footer .contact-info i {
+            width: 25px;
+            margin-right: 8px;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        .simple-map {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .simple-map iframe {
+            width: 100%;
+            height: 200px;
+            border-radius: 5px;
+            border: 0;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fas fa-car"></i> АвтоМастер
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Главная</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'service_list' %}">Услуги</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'mechanic_list' %}">Механики</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'car_list' %}">Автомобили</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'review_list' %}">Отзывы</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contacts' %}">Контакты</a></li>
+
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'service_cart' %}">
+                            <i class="fas fa-shopping-cart"></i> Корзина
+                        </a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">Личный кабинет</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Войти</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Регистрация</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fas fa-wrench"></i> АвтоМастер</h5>
+                    <p class="small">Профессиональный ремонт и обслуживание автомобилей. Качество и надежность.</p>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fas fa-clock"></i> Часы работы</h5>
+                    <ul class="list-unstyled small">
+                        <li>Пн-Пт: 9:00 - 21:00</li>
+                        <li>Сб: 10:00 - 18:00</li>
+                        <li>Вс: 10:00 - 16:00</li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fas fa-phone"></i> Контакты</h5>
+                    <ul class="list-unstyled contact-info small">
+                        <li><i class="fas fa-map-marker-alt"></i> Белореченск, ул. Чапаева, 48</li>
+                        <li><i class="fas fa-phone"></i> +7 (900) 777-77-77</li>
+                        <li><i class="fas fa-envelope"></i> kirill@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="simple-map">
+                <iframe
+                    src="https://yandex.ru/map-widget/v1/?ll=37.617698%2C55.755864&mode=search&oid=1074580075&ol=biz&z=16"
+                    allowfullscreen="true"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <div class="copyright">
+                <p class="mb-0">© 2026 АвтоМастер. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

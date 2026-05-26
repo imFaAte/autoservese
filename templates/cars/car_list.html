@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Наши автомобили{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Автомобили наших клиентов</h1>
+    
+    <div class="row">
+        {% for car in cars %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if car.image %}
+                <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-car fa-4x text-secondary"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
+                    <p class="card-text">
+                        <strong>Год:</strong> {{ car.year }}<br>
+                        <strong>Гос номер:</strong> {{ car.plate_number }}<br>
+                        <strong>Владелец:</strong> {{ car.owner.username }}
+                    </p>
+                    <a href="{% url 'car_detail' car.id %}" class="btn btn-primary">Подробнее</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Добавлен: {{ car.created_at|date:"d.m.Y" }}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> Пока нет добавленных автомобилей
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if cars.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if cars.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">« Первая</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ cars.previous_page_number }}">Назад</a>
+            </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">{{ cars.number }}</span>
+            </li>
+            
+            {% if cars.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ cars.next_page_number }}">Далее</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ cars.paginator.num_pages }}">Последняя »</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

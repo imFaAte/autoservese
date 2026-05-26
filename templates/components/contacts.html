@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2>Наши контакты</h2>
+        <p class="text-muted">Свяжитесь с нами</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                    </div>
+                    <h6 class="mb-2">Адрес</h6>
+                    <p class="small text-muted mb-0">
+                        г. Белореченск<br>
+                        ул. Чапаева, 48
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-phone-alt fa-2x text-primary"></i>
+                    </div>
+                    <h6 class="mb-2">Телефон</h6>
+                    <p class="small text-muted mb-0">
+                        +7 (900) 777-77-77<br>
+                        +7 (900) 666-66-66
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-envelope fa-2x text-primary"></i>
+                    </div>
+                    <h6 class="mb-2">Email</h6>
+                    <p class="small text-muted mb-0">
+                        kirill@gmail.com<br>
+                        paha@gmail.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="text-center mb-4">
+                        <i class="fas fa-paper-plane text-primary me-2"></i>
+                        Написать нам
+                    </h5>
+                    <form onsubmit="alert('Спасибо! Мы свяжемся с вами.'); return false;">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Ваше имя" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="Email" required>
+                            </div>
+                            <div class="col-12">
+                                <input type="text" class="form-control" placeholder="Тема" required>
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control" rows="3" placeholder="Сообщение" required></textarea>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    Отправить <i class="fas fa-arrow-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

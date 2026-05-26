@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Наши механики{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Наши специалисты</h1>
+    <p class="text-center text-muted mb-5">Опытные мастера с многолетним стажем</p>
+    
+    <div class="row">
+        {% for mechanic in mechanics %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 text-center shadow-sm">
+                {% if mechanic.photo %}
+                <img src="{{ mechanic.photo.url }}" class="card-img-top" alt="{{ mechanic.full_name }}" style="height: 250px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <i class="fas fa-user-cog fa-5x text-secondary"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ mechanic.full_name }}</h5>
+                    <p class="card-text">
+                        <span class="badge bg-info">{{ mechanic.specialization }}</span><br>
+                        <i class="fas fa-briefcase"></i> Опыт: {{ mechanic.experience }} лет<br>
+                        <i class="fas fa-phone"></i> {{ mechanic.phone }}
+                    </p>
+                    <a href="{% url 'mechanic_detail' mechanic.id %}" class="btn btn-outline-primary">Подробнее</a>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        {% with review_count=mechanic.reviews.count %}
+                            <i class="fas fa-star text-warning"></i> 
+                            Средний рейтинг: {% if review_count > 0 %}{{ mechanic.reviews.all|dictsort:"rating"|length }}{% else %}Нет оценок{% endif %}
+                            ({{ review_count }} отзывов)
+                        {% endwith %}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> Пока нет добавленных механиков
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if mechanics.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if mechanics.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">« Первая</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ mechanics.previous_page_number }}">Назад</a></li>
+            {% endif %}
+            
+            <li class="page-item active"><span class="page-link">{{ mechanics.number }}</span></li>
+            
+            {% if mechanics.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ mechanics.next_page_number }}">Далее</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ mechanics.paginator.num_pages }}">Последняя »</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

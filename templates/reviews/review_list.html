@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзывы клиентов{% endblock %}
+
+{% block extra_css %}
+<style>
+    .review-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .star-rating {
+        color: #ffc107;
+        font-size: 1.1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Отзывы наших клиентов</h1>
+        <p class="lead">Узнайте, что говорят о нас автовладельцы</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-4 text-center">
+                <div class="btn-group">
+                    <button class="btn btn-outline-primary active" onclick="showAllReviews()">Все отзывы</button>
+                    <button class="btn btn-outline-primary" onclick="showHighRating()">Высокий рейтинг (5★)</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12" id="reviewsContainer">
+            {% for review in reviews %}
+            <div class="review-card card mb-4 shadow-sm" data-rating="{{ review.rating }}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">
+                                <i class="fas fa-user-circle"></i> {{ review.user.get_full_name|default:review.user.username }}
+                            </h5>
+                            <div class="star-rating mb-2">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-muted ms-2">({{ review.rating }}/5)</span>
+                            </div>
+                            <p class="card-text">{{ review.text }}</p>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt"></i> {{ review.created_at|date:"d.m.Y" }}
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-info">
+                                <i class="fas fa-wrench"></i> Механик: {{ review.mechanic.full_name }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-2x"></i>
+                <h4 class="mt-2">Пока нет отзывов</h4>
+                <p>Будьте первым, кто оставит отзыв о наших механиках!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function showAllReviews() {
+    const reviews = document.querySelectorAll('.review-card');
+    reviews.forEach(review => {
+        review.style.display = 'block';
+    });
+}
+
+function showHighRating() {
+    const reviews = document.querySelectorAll('.review-card');
+    reviews.forEach(review => {
+        const rating = review.getAttribute('data-rating');
+        if (rating == '5') {
+            review.style.display = 'block';
+        } else {
+            review.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

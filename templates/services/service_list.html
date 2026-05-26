@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Услуги автосервиса{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Наши услуги</h1>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Фильтр</h5>
+                    <form method="get">
+                        <label>Цена от</label>
+                        <input type="number" name="min_price" class="form-control mb-2" placeholder="Мин. цена">
+                        <label>Цена до</label>
+                        <input type="number" name="max_price" class="form-control mb-2" placeholder="Макс. цена">
+                        <label>Сортировка</label>
+                        <select name="sort" class="form-select mb-3">
+                            <option value="">По новизне</option>
+                            <option value="price_asc">Сначала дешевле</option>
+                            <option value="price_desc">Сначала дороже</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary w-100">Применить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="row">
+                {% for service in services %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ service.name }}</h5>
+                            <p class="card-text">{{ service.description|truncatewords:15 }}</p>
+                            <p class="fw-bold">{{ service.price }} ₽</p>
+                            <a href="{% url 'service_detail' service.slug %}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                            <a href="{% url 'add_to_cart' service.id %}" class="btn btn-sm btn-success">В корзину</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if services.has_other_pages %}
+            <nav>
+                <ul class="pagination">
+                    {% if services.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1">« Первая</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ services.previous_page_number }}">Назад</a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ services.number }}</span></li>
+                    {% if services.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ services.next_page_number }}">Далее</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ services.paginator.num_pages }}">Последняя »</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

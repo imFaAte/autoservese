@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Корзина услуг{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Корзина услуг</h1>
+    
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Услуга</th>
+                            <th>Цена</th>
+                            <th>Количество</th>
+                            <th>Сумма</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.service.name }}</strong><br>
+                                <small class="text-muted">{{ item.service.description|truncatewords:10 }}</small>
+                            </td>
+                            <td>{{ item.service.price }} ₽</td>
+                            <td>
+                                <form method="post" action="{% url 'update_cart_quantity' item.service.id %}" class="d-inline" style="display: inline-flex; gap: 5px;">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" style="width: 70px;" class="form-control form-control-sm">
+                                    <button type="submit" class="btn btn-sm btn-secondary">
+                                        <i class="fas fa-sync-alt"></i> Обновить
+                                    </button>
+                                </form>
+                             </td>
+                            <td><strong>{{ item.subtotal }} ₽</strong></td>
+                            <td>
+                                <a href="{% url 'remove_from_cart' item.service.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Удалить услугу из корзины?')">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </a>
+                             </td>
+                         </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="table-dark">
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                            <td colspan="2"><strong class="fs-4">{{ total_price }} ₽</strong></td>
+                         </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Оформление заказа</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Количество услуг:</strong> {{ cart_items|length }}</p>
+                    <p><strong>Общая сумма:</strong></p>
+                    <h3 class="text-primary mb-3">{{ total_price }} ₽</h3>
+                    <hr>
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'create_order' %}" class="btn btn-success w-100 mb-2">
+                            <i class="fas fa-check-circle"></i> Оформить заказ
+                        </a>
+                        <small class="text-muted d-block text-center">После оформления заказа с вами свяжется менеджер</small>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Для оформления заказа необходимо
+                            <a href="/admin/login/?next={{ request.path }}" class="alert-link">войти</a> в систему
+                        </div>
+                        <div class="text-center">
+                            <small class="text-muted">Нет аккаунта? Обратитесь к администратору</small>
+                        </div>
+                    {% endif %}
+
+                    <hr>
+                    <a href="{% url 'service_list' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-arrow-left"></i> Продолжить покупки
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mt-3 shadow">
+                <div class="card-body">
+                    <h6><i class="fas fa-info-circle"></i> Информация</h6>
+                    <small class="text-muted">
+                        Мы свяжемся с вами для подтверждения времени записи.
+                        Возможна предоплата на месте.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="alert alert-info">
+            <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+            <h4>Ваша корзина пуста</h4>
+            <p>Добавьте услуги, чтобы оформить заказ</p>
+            <a href="{% url 'service_list' %}" class="btn btn-primary mt-2">
+                <i class="fas fa-list"></i> Перейти к услугам
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('input[name="quantity"]').forEach(input => {
+        input.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    });
+</script>
+{% endblock %}

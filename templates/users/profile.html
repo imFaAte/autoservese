@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-user"></i> {{ user.username }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Имя:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Дата регистрации:</strong> {{ user.date_joined|date:"d.m.Y" }}</p>
+                    <a href="{% url 'logout' %}" class="btn btn-danger w-100">Выйти</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Мои автомобили</h5>
+                </div>
+                <div class="card-body">
+                    {% if cars %}
+                        <div class="row">
+                            {% for car in cars %}
+                            <div class="col-md-6 mb-3">
+                                <div class="border rounded p-3">
+                                    <h6>{{ car.brand }} {{ car.model }}</h6>
+                                    <p class="small mb-1">Год: {{ car.year }}</p>
+                                    <p class="small mb-1">Гос номер: {{ car.plate_number }}</p>
+                                    <a href="{% url 'delete_car' car.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Удалить автомобиль?')">Удалить</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">У вас пока нет добавленных автомобилей</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Добавить автомобиль</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success">Добавить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

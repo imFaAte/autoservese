@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero">
+    <div class="container text-center">
+        <h1 class="display-4">Профессиональный ремонт и обслуживание авто</h1>
+        <p class="lead">Опытные механики, современное оборудование, гарантия качества</p>
+        <a href="{% url 'service_list' %}" class="btn btn-primary btn-lg">Записаться онлайн</a>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Наши услуги</h2>
+    <div class="row">
+        {% for service in services %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                {% if service.image %}
+                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center">
+                    <i class="fas fa-wrench fa-3x text-secondary"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ service.name }}</h5>
+                    <p class="card-text text-truncate">{{ service.description }}</p>
+                    <p class="fw-bold">{{ service.price }} ₽</p>
+                    <a href="{% url 'service_detail' service.slug %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                    <a href="{% url 'add_to_cart' service.id %}" class="btn btn-success btn-sm">В корзину</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-3">
+        <a href="{% url 'service_list' %}" class="btn btn-secondary">Все услуги →</a>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Наши специалисты</h2>
+    <div class="row">
+        {% for mechanic in mechanics %}
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                {% if mechanic.photo %}
+                <img src="{{ mechanic.photo.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ mechanic.full_name }}">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-user-cog fa-4x text-secondary"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ mechanic.full_name }}</h5>
+                    <p class="card-text">{{ mechanic.specialization }}<br>Опыт: {{ mechanic.experience }} лет</p>
+                    <a href="{% url 'mechanic_detail' mechanic.id %}" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container text-center">
+        <h2>Почему выбирают нас?</h2>
+        <div class="row mt-4">
+            <div class="col-md-4"><i class="fas fa-tools fa-3x"></i><h4>Современное оборудование</h4></div>
+            <div class="col-md-4"><i class="fas fa-user-check fa-3x"></i><h4>Опытные мастера</h4></div>
+            <div class="col-md-4"><i class="fas fa-clock fa-3x"></i><h4>Быстрое обслуживание</h4></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

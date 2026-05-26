@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ mechanic.full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .rating-stars i { color: #ffc107; font-size: 1.2rem; }
+    .review-card { transition: transform 0.2s; }
+    .review-card:hover { transform: translateY(-5px); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow">
+                {% if mechanic.photo %}
+                <img src="{{ mechanic.photo.url }}" class="card-img-top" alt="{{ mechanic.full_name }}">
+                {% else %}
+                <div class="bg-light p-5 text-center">
+                    <i class="fas fa-user-cog fa-6x text-secondary"></i>
+                </div>
+                {% endif %}
+                <div class="card-body text-center">
+                    <h3>{{ mechanic.full_name }}</h3>
+                    <p class="badge bg-primary">{{ mechanic.specialization }}</p>
+                    <hr>
+                    <p><i class="fas fa-briefcase"></i> Опыт работы: <strong>{{ mechanic.experience }} лет</strong></p>
+                    <p><i class="fas fa-phone"></i> Телефон: <strong>{{ mechanic.phone }}</strong></p>
+                    {% if mechanic.is_active %}
+                    <span class="badge bg-success">Активен</span>
+                    {% else %}
+                    <span class="badge bg-danger">Неактивен</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Отзывы клиентов</h4>
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                        {% for review in reviews %}
+                        <div class="review-card mb-3 p-3 border rounded">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>{{ review.user.username }}</strong>
+                                <small class="text-muted">{{ review.created_at|date:"d.m.Y" }}</small>
+                            </div>
+                            <div class="rating-stars my-2">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2">({{ review.rating }}/5)</span>
+                            </div>
+                            <p class="mb-0">{{ review.text }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-info-circle"></i> У этого механика пока нет отзывов
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
